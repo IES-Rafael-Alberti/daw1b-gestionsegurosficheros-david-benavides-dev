@@ -1,5 +1,7 @@
 package model
 
+import utils.Seguridad
+
 /**
  *
  */
@@ -22,14 +24,14 @@ class Usuario(var nombre: String, var clave: String, var perfil: String): IExpor
      *
      */
     init {
-        TODO("Nombre único?")
+        clave = Seguridad.encriptarClave(clave)
     }
 
     /**
      *
      */
     fun verificarClave(claveEncriptada: String): Boolean {
-        return clave == claveEncriptada
+        return Seguridad.verificarClave(claveEncriptada, clave)
     }
 
     /**
@@ -43,6 +45,6 @@ class Usuario(var nombre: String, var clave: String, var perfil: String): IExpor
      *
      */
     override fun serializar(): String {
-        return "nombre;clave;perfil"
+        return "$nombre;$clave;$perfil"
     }
 }

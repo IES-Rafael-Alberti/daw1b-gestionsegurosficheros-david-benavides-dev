@@ -4,7 +4,6 @@ abstract class Seguro(private var numPoliza: Int, private var dniTitular: String
 
     companion object{
         private var polizaCont: Int = 100000
-
         /**
          *
          */

@@ -2,7 +2,7 @@ package utils
 
 import at.favre.lib.crypto.bcrypt.BCrypt
 
-class Seguridad : IUtilSeguridad {
+object Seguridad : IUtilSeguridad {
 
     /**
      * Genera un hash seguro de la clave utilizando el algoritmo BCrypt.
