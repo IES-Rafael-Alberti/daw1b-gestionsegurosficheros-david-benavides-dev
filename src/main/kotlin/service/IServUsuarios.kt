@@ -1,0 +1,4 @@
+package service
+
+interface IServUsuarios {
+}
