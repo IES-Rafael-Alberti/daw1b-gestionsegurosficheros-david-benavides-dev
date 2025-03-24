@@ -1,22 +1,6 @@
 package model
 
 abstract class Seguro(private var numPoliza: Int, private var dniTitular: String, protected var importe: Double): IExportable {
-
-    companion object{
-        private var polizaCont: Int = 100000
-        /**
-         *
-         */
-        fun generarNumPoliza(): Int{
-            polizaCont += 1
-            return polizaCont
-        }
-    }
-
-    init {
-        numPoliza = generarNumPoliza()
-    }
-
     /**
      *
      */
@@ -24,31 +8,47 @@ abstract class Seguro(private var numPoliza: Int, private var dniTitular: String
         return this.numPoliza == numPoliza
     }
 
+    init {
+        require(dniTitular.matches(Regex("^[0-9]{8}[A-Z]$"))) { "*ERROR* DNI incorrecto." }
+    }
+
+    /**
+     * Métodos abstractos
+     */
+    abstract fun calcularImporteAnioSiguiente(interes: Double): Double
+    abstract fun tipoSeguro(): String
+
     /**
      *
      */
-    override fun serializar(): String {
-        return "$numPoliza;$dniTitular;$importe"
+    override fun serializar(separador: String): String {
+        return "$numPoliza$separador$dniTitular$separador$importe"
+    }
+
+    protected fun obtenerDatosSeguro(): String {
+        return "numPoliza=$numPoliza, dniTitular=$dniTitular, importe=${"%.2f".format(importe)}"
     }
 
     /**
      *
      */
     override fun toString(): String {
-        return "Seguro(numPoliza=$numPoliza, dniTitular=$dniTitular, importe=${String.format("%2.f", importe)}"
+        return "Seguro(${obtenerDatosSeguro()})"
     }
 
     /**
      *
      */
     override fun hashCode(): Int {
-        return super.hashCode()
+        return numPoliza.hashCode() + dniTitular.hashCode()
     }
 
     /**
      *
      */
     override fun equals(other: Any?): Boolean {
-        return super.equals(other)
+        if (this === other) return true
+        if (other !is Seguro) return false
+        return numPoliza == other.numPoliza && dniTitular == other.dniTitular
     }
 }

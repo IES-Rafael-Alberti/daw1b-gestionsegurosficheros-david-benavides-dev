@@ -5,17 +5,13 @@ import utils.Seguridad
 /**
  *
  */
-class Usuario(var nombre: String, var clave: String, var perfil: String): IExportable {
-    companion object{
+class Usuario(var nombre: String, clave: String, var perfil: String) : IExportable {
+    companion object {
         /**
          *
          */
         fun crearUsuario(datos: List<String>): Usuario {
-            try {
-                Usuario(datos[0], datos[1], datos[2])
-            } catch (e: IllegalArgumentException) {
-                println("ERROR FATAL")
-            }
+            require(datos.size == 3) { "*ERROR* No hay suficientes datos para crear un usuario." }
             return Usuario(datos[0], datos[1], datos[2])
         }
     }
@@ -23,9 +19,8 @@ class Usuario(var nombre: String, var clave: String, var perfil: String): IExpor
     /**
      *
      */
-    init {
-        clave = Seguridad.encriptarClave(clave)
-    }
+    var clave: String = Seguridad.encriptarClave(clave)
+        private set
 
     /**
      *
@@ -44,7 +39,7 @@ class Usuario(var nombre: String, var clave: String, var perfil: String): IExpor
     /**
      *
      */
-    override fun serializar(): String {
-        return "$nombre;$clave;$perfil"
+    override fun serializar(separador: String): String {
+        return "$nombre$separador$clave$separador$perfil"
     }
 }
