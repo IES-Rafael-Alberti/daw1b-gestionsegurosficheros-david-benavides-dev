@@ -11,11 +11,13 @@ enum class Riesgo(interesAplicado: Double) {
     /**
      *
      */
-    fun getRiesgo(valor: String): Riesgo {
-        return when(valor.lowercase()) {
-            "bajo" -> BAJO
-            "alto" -> ALTO
-            else -> MEDIO
+    companion object {
+        fun getRiesgo(valor: String): Riesgo {
+            return when (valor.lowercase()) {
+                "bajo" -> BAJO
+                "alto" -> ALTO
+                else -> MEDIO
+            }
         }
     }
 }

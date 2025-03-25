@@ -1,59 +1,84 @@
 package model
 
+import java.time.LocalDate
+
+/**
+ *
+ */
 class SeguroVida : Seguro {
-    private var descripcion: String
-    private var combustible: Int
-    private var tipoAuto: Auto
-    private var cobertura: Cobertura
-    private var asistenciaCarretera: Boolean
-    private var numPartes: Int
+    private var fechaNac: LocalDate
+    private var nivelRiesgo: Riesgo
+    private var indemnizacion: Double
 
     companion object {
-        private var numPolizasAuto: Int = 400000
+        private var numPolizasVida: Int = 800000
 
-        fun crearSeguro(datos: List<String>): SeguroAuto? {
-            if (datos.size < 9) {
+        /**
+         *
+         */
+        fun crearSeguro(datos: List<String>): SeguroVida? {
+            if (datos.size < 6) {
                 return null
             }
             try {
                 datos[0].toInt()
-                datos[1].isNotEmpty()
+                datos[1].isNotBlank()
                 datos[2].toDouble()
-                datos[3].isNotEmpty()
-                datos[4].toInt()
-                // datos[5].uppercase() in Auto.entries.map{ it.name }
-                datos[5].isNotEmpty()
-                datos[6].isNotEmpty()
-                datos[7].toBoolean()
-                datos[8].toInt()
-                return SeguroVida()
+                LocalDate.parse(datos[3])
+                datos[4].isNotBlank()
+                datos[5].toDouble()
+                return SeguroVida(datos[0].toInt(), datos[1], datos[2].toDouble(), LocalDate.parse(datos[3]), Riesgo.getRiesgo(datos[4]), datos[5].toDouble())
             } catch (e: IllegalArgumentException) {
                 return null
             }
         }
-
-        private fun numPolizasAuto(): Int {
-            numPolizasAuto++
-            return numPolizasAuto
-        }
     }
 
+    /**
+     *
+     */
+    constructor(dniTitular: String, importe: Double, fechaNac: LocalDate, nivelRiesgo: Riesgo, indemnizacion: Double) : super(numPoliza = numPolizasVida++, dniTitular, importe) {
+        this.fechaNac = fechaNac
+        this.nivelRiesgo = nivelRiesgo
+        this.indemnizacion = indemnizacion
 
-    constructor(dniTitular: String, importe: Double, descripcion: String, combustible: Int, tipoAuto: Auto, cobertura: Cobertura, asistenciaCarretera: Boolean, numPartes: Int) : super(numPoliza = numPolizasAuto++, dniTitular, importe) {
-        this.descripcion = descripcion
-        this.combustible = combustible
-        this.tipoAuto = tipoAuto
-        this.cobertura = cobertura
-        this.asistenciaCarretera = asistenciaCarretera
-        this.numPartes = numPartes
     }
 
-    private constructor(numPoliza: Int, dniTitular: String, importe: Double, descripcion: String, combustible: Int, tipoAuto: Auto, cobertura: Cobertura, asistenciaCarretera: Boolean, numPartes: Int) : super(numPoliza, dniTitular, importe) {
-        this.descripcion = descripcion
-        this.combustible = combustible
-        this.tipoAuto = tipoAuto
-        this.cobertura = cobertura
-        this.asistenciaCarretera = asistenciaCarretera
-        this.numPartes = numPartes
+    /**
+     *
+     */
+    private constructor(numPoliza: Int, dniTitular: String, importe: Double, fechaNac: LocalDate, nivelRiesgo: Riesgo, indemnizacion: Double) : super(numPoliza, dniTitular, importe) {
+        this.fechaNac = fechaNac
+        this.nivelRiesgo = nivelRiesgo
+        this.indemnizacion = indemnizacion
+
+    }
+
+    /**
+     *
+     */
+    override fun calcularImporteAnioSiguiente(interes: Double): Double {
+        TODO("Not yet implemented")
+    }
+
+    /**
+     *
+     */
+    override fun tipoSeguro(): String {
+        return this::class.simpleName ?: "Desconocido"
+    }
+
+    /**
+     *
+     */
+    override fun serializar(separador: String): String {
+        return super.serializar(separador) + "$separador$fechaNac$separador$nivelRiesgo$separador$indemnizacion"
+    }
+
+    /**
+     *
+     */
+    override fun toString(): String {
+        return "Seguro Vida=(${obtenerDatosSeguro()}, fechaNac=$fechaNac, nivelRiesgo=$nivelRiesgo, indemnizacion=$indemnizacion)"
     }
 }

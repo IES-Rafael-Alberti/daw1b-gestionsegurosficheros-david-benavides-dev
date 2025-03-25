@@ -9,11 +9,13 @@ enum class Auto {
     /**
      *
      */
-    fun getAuto(valor: String): Auto {
-        return when(valor.lowercase()) {
-            "moto" -> MOTO
-            "camion" -> CAMION
-            else -> COCHE
+    companion object {
+        fun getAuto(valor: String): Auto {
+            return when (valor.lowercase()) {
+                "moto" -> MOTO
+                "camion" -> CAMION
+                else -> COCHE
+            }
         }
     }
 }

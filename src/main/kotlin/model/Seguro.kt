@@ -25,6 +25,9 @@ abstract class Seguro(private var numPoliza: Int, private var dniTitular: String
         return "$numPoliza$separador$dniTitular$separador$importe"
     }
 
+    /**
+     *
+     */
     protected fun obtenerDatosSeguro(): String {
         return "numPoliza=$numPoliza, dniTitular=$dniTitular, importe=${"%.2f".format(importe)}"
     }

@@ -16,15 +16,7 @@ class SeguroHogar : Seguro {
         // Constante con el año para evitar ediciones de fecha local del ordenador al usar time.year.now
         const val ANIO_ACTUAL = 2025
 
-        private var contadorPoliza: Int = 100000
-
-        /**
-         *
-         */
-        private fun numPolizasAuto(): Int {
-            contadorPoliza++
-            return contadorPoliza
-        }
+        private var numPolizasAuto: Int = 100000
 
         /**
          * Crea un seguro utilizando el constructor privado
@@ -51,7 +43,7 @@ class SeguroHogar : Seguro {
     /**
      * Constructor para contratar NUEVO seguro con número de póliza automático.
      */
-    constructor(dniTitular: String, importe: Double, metrosCuadrados: Int, valorContenido: Double, direccion: String, anioConstruccion: Int) : super(numPoliza = numPolizasAuto(), dniTitular, importe) {
+    constructor(dniTitular: String, importe: Double, metrosCuadrados: Int, valorContenido: Double, direccion: String, anioConstruccion: Int) : super(numPoliza = numPolizasAuto++, dniTitular, importe) {
         this.metrosCuadrados = metrosCuadrados
         this.valorContenido = valorContenido
         this.direccion = direccion
@@ -95,6 +87,6 @@ class SeguroHogar : Seguro {
     }
 
     override fun toString(): String {
-        return "Seguro=(${obtenerDatosSeguro()}, metrosCuadrados=$metrosCuadrados, valorContenido=$valorContenido, direccion=$direccion, anioConstruccion=$anioConstruccion)"
+        return "Seguro Hogar=(${obtenerDatosSeguro()}, metrosCuadrados=$metrosCuadrados, valorContenido=$valorContenido, direccion=$direccion, anioConstruccion=$anioConstruccion)"
     }
 }
