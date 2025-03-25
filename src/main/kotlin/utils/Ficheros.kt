@@ -2,10 +2,12 @@ package utils
 
 import model.IExportable
 import model.Seguro
+import java.io.File
 
 class Ficheros: IUtilFicheros {
     override fun leerArchivo(ruta: String): List<String> {
-        TODO("Not yet implemented")
+        val rutaArchivo = File(ruta)
+        return rutaArchivo.readLines()
     }
 
     override fun leerSeguros(ruta: String, mapaSeguros: Map<String, (List<String>) -> Seguro>): List<Seguro> {
