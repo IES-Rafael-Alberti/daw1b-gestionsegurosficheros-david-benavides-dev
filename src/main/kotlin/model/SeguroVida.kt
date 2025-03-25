@@ -58,7 +58,14 @@ class SeguroVida : Seguro {
      *
      */
     override fun calcularImporteAnioSiguiente(interes: Double): Double {
-        TODO("Not yet implemented")
+
+        val anios = LocalDate.now().year - fechaNac.year
+
+        val interesResidual = anios * (0.05 / 100)
+
+        val interesTotal = interes + interesResidual + nivelRiesgo.interesAplicado
+
+        return importe * (1 + interesTotal)
     }
 
     /**
