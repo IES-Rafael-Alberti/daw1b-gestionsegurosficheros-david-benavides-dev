@@ -1,22 +1,21 @@
 package model
 
 abstract class Seguro(private var numPoliza: Int, private var dniTitular: String, protected var importe: Double): IExportable {
-    /**
-     *
-     */
-    fun comprobarNumpoliza(numPoliza: Int): Boolean {
-        return this.numPoliza == numPoliza
-    }
-
     init {
         require(dniTitular.matches(Regex("^[0-9]{8}[A-Z]$"))) { "*ERROR* DNI incorrecto." }
     }
 
     /**
-     * Métodos abstractos
+     *
      */
     abstract fun calcularImporteAnioSiguiente(interes: Double): Double
-    abstract fun tipoSeguro(): String
+
+    /**
+     *
+     */
+    fun tipoSeguro(): String {
+        return this::class.simpleName ?: "Desconocido"
+    }
 
     /**
      *

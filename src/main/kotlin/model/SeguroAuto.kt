@@ -25,13 +25,13 @@ class SeguroAuto : Seguro {
             }
             try {
                 datos[0].toInt()
-                datos[1].isNotEmpty()
+                datos[1].isNotBlank()
                 datos[2].toDouble()
-                datos[3].isNotEmpty()
+                datos[3].isNotBlank()
                 datos[4].toInt()
                 // datos[5].uppercase() in Auto.entries.map{ it.name }
-                datos[5].isNotEmpty()
-                datos[6].isNotEmpty()
+                datos[5].isNotBlank()
+                datos[6].isNotBlank()
                 datos[7].toBoolean()
                 datos[8].toInt()
                 return SeguroAuto(datos[0].toInt(), datos[1], datos[2].toDouble(), datos[3], datos[4].toInt(), Auto.getAuto(datos[5]), Cobertura.getCobertura(datos[6]), datos[7].toBoolean(), datos[8].toInt())
@@ -73,13 +73,6 @@ class SeguroAuto : Seguro {
 
         // Importe del año siguiente basándose en el interés que se pasa por parámetro, sumándole un interés residual del 2%(PORCENTAJE_INCREMENTO_PARTES) por cada parte declarado.
         return importe * (1 + (interes + incrementoPartes) / 100)
-    }
-
-    /**
-     * Retorna el nombre de la clase usando this::class.simpleName y el operador elvis para indicar al compilador que si simpleName es null, entonces retorna el valor "Desconocido".
-     */
-    override fun tipoSeguro(): String {
-        return this::class.simpleName?: "Desconocido"
     }
 
     /**

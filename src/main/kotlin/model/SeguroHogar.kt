@@ -27,11 +27,11 @@ class SeguroHogar : Seguro {
             }
             try {
                 datos[0].toInt()
-                datos[1].isNotEmpty()
+                datos[1].isNotBlank()
                 datos[2].toDouble()
                 datos[3].toInt()
                 datos[4].toDouble()
-                datos[5].isNotEmpty()
+                datos[5].isNotBlank()
                 datos[6].toInt()
                 return SeguroHogar(datos[0].toInt(), datos[1], datos[2].toDouble(), datos[3].toInt(), datos[4].toDouble(), datos[5], datos[6].toInt())
             } catch (e: IllegalArgumentException) {
@@ -73,10 +73,6 @@ class SeguroHogar : Seguro {
         val interesTotal = interes + interesResidual * 100
 
         return importe + (importe * interesTotal / 100)
-    }
-
-    override fun tipoSeguro(): String {
-        return this::class.simpleName ?: "Desconocido"
     }
 
     /**

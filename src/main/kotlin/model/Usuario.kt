@@ -12,6 +12,9 @@ class Usuario(var nombre: String, clave: String, var perfil: Perfil) : IExportab
          */
         fun crearUsuario(datos: List<String>): Usuario {
             require(datos.size == 3) { "*ERROR* No hay suficientes datos para crear un usuario." }
+            require(datos[0].isNotBlank()) { "*ERROR* No has introducido un nombre." }
+            require(datos[1].isNotBlank()) { "*ERROR* Error con la clave." }
+            require(datos[2].isNotBlank()) { "ERROR Error con el perfil." }
             return Usuario(datos[0], datos[1], Perfil.getPerfil(datos[2]))
         }
     }

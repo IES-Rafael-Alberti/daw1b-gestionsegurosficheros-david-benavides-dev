@@ -4,14 +4,14 @@ import model.Perfil
 import model.Usuario
 
 sealed class RepoUsuariosMem : IRepoUsuarios {
-    private val dbMemoria: MutableList<Usuario> = mutableListOf()
+    private val usuarios: MutableList<Usuario> = mutableListOf()
 
     /**
      *
      */
     override fun agregar(usuario: Usuario): Boolean {
         if (buscar(usuario.nombre) != null) {
-            dbMemoria.add(usuario)
+            usuarios.add(usuario)
             return true
         }
         return false
@@ -21,7 +21,7 @@ sealed class RepoUsuariosMem : IRepoUsuarios {
      *
      */
     override fun buscar(nombreUsuario: String): Usuario? {
-        return dbMemoria.find { it.nombre == nombreUsuario }
+        return usuarios.find { it.nombre == nombreUsuario }
     }
 
     /**
@@ -29,7 +29,7 @@ sealed class RepoUsuariosMem : IRepoUsuarios {
      */
     override fun eliminar(usuario: Usuario): Boolean {
         if (buscar(usuario.nombre) != null) {
-            dbMemoria.remove(usuario)
+            usuarios.remove(usuario)
             return true
         }
         return false
@@ -52,14 +52,14 @@ sealed class RepoUsuariosMem : IRepoUsuarios {
      *
      */
     override fun obtenerTodos(): List<Usuario> {
-        return dbMemoria
+        return usuarios
     }
 
     /**
      *
      */
     override fun obtener(perfil: Perfil): List<Usuario> {
-        return dbMemoria.filter { it.perfil == perfil }
+        return usuarios.filter { it.perfil == perfil }
     }
 
     /**

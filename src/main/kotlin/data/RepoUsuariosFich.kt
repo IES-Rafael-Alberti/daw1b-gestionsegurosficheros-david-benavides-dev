@@ -7,21 +7,47 @@ import utils.IUtilFicheros
 /**
  *
  */
-class RepoUsuariosFich(val ruta: String, val utilFicheros: IUtilFicheros): RepoUsuariosMem(), ICargarUsuariosIniciales {
-    private val dbMemoria: MutableList<String> = mutableListOf()
+class RepoUsuariosFich(private val rutaArchivo: String, private val fich: IUtilFicheros) : RepoUsuariosMem(), ICargarUsuariosIniciales {
+    private val usuarios: MutableList<Usuario> = mutableListOf()
+
+    init {
+        cargarUsuarios()
+    }
 
     /**
      *
      */
     override fun cargarUsuarios(): Boolean {
-        val lista = utilFicheros.leerArchivo(ruta)
-        dbMemoria.clear()
-        dbMemoria.addAll(lista)
-        return true
+        if (fich.existeFichero(rutaArchivo)) {
+
+            val listaStrings = fich.leerArchivo(rutaArchivo)
+
+            if (usuarios.isNotEmpty()) {
+                usuarios.clear()
+            }
+
+            for (linea in listaStrings) {
+                val datos = linea.split(";")
+                try {
+                    require(datos.size == 3)
+                } catch (e: IllegalArgumentException) {
+                    return false
+                }
+                usuarios.add(Usuario(datos[0], datos[1], Perfil.getPerfil(datos[2])))
+            }
+            return true
+        }
+        return false
     }
 
+    /**
+     *
+     */
     override fun agregar(usuario: Usuario): Boolean {
-        return super.agregar(usuario)
+        if (fich.escribirArchivo(rutaArchivo, usuarios.filter { it != usuario })) {
+            return super.agregar(usuario)
+        }
+        return false
     }
 
     override fun buscar(nombreUsuario: String): Usuario? {
@@ -29,7 +55,10 @@ class RepoUsuariosFich(val ruta: String, val utilFicheros: IUtilFicheros): RepoU
     }
 
     override fun eliminar(usuario: Usuario): Boolean {
-        return super.eliminar(usuario)
+        if (fich.escribirArchivo(rutaArchivo, usuarios.filter { it != usuario })) {
+            return super.eliminar(usuario)
+        }
+        return false
     }
 
     override fun eliminar(nombreUsuario: String): Boolean {

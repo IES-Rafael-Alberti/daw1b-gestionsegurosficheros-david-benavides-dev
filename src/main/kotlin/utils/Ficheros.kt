@@ -2,20 +2,25 @@ package utils
 
 import model.IExportable
 import model.Seguro
+import ui.IEntradaSalida
 import java.io.File
 
-class Ficheros: IUtilFicheros {
+class Ficheros(val entradaSalida: IEntradaSalida) : IUtilFicheros {
     override fun leerArchivo(ruta: String): List<String> {
+        if (!existeFichero(ruta)) {
+            throw IllegalArgumentException("*ERROR* El archivo no existe.")
+        }
         val rutaArchivo = File(ruta)
         return rutaArchivo.readLines()
     }
 
-    override fun leerSeguros(ruta: String, mapaSeguros: Map<String, (List<String>) -> Seguro>): List<Seguro> {
-        TODO("Not yet implemented")
-    }
-
     override fun agregarLinea(ruta: String, linea: String): Boolean {
-        TODO("Not yet implemented")
+        if (!existeFichero(ruta)) {
+            return false
+        } else {
+            File(ruta).appendText(linea)
+            return true
+        }
     }
 
     override fun <T : IExportable> escribirArchivo(ruta: String, elementos: List<T>): Boolean {
@@ -23,10 +28,10 @@ class Ficheros: IUtilFicheros {
     }
 
     override fun existeFichero(ruta: String): Boolean {
-        TODO("Not yet implemented")
+        return File(ruta).exists()
     }
 
     override fun existeDirectorio(ruta: String): Boolean {
-        TODO("Not yet implemented")
+        return File(ruta).isDirectory
     }
 }
