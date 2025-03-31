@@ -1,6 +1,7 @@
 package model
 
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 /**
  *
@@ -24,7 +25,7 @@ class SeguroVida : Seguro {
                 datos[0].toInt()
                 datos[1].isNotBlank()
                 datos[2].toDouble()
-                LocalDate.parse(datos[3])
+                LocalDate.parse(datos[3], DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                 datos[4].isNotBlank()
                 datos[5].toDouble()
                 return SeguroVida(datos[0].toInt(), datos[1], datos[2].toDouble(), LocalDate.parse(datos[3]), Riesgo.getRiesgo(datos[4]), datos[5].toDouble())

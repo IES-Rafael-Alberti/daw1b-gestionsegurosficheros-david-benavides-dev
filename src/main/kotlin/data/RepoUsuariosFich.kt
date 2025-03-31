@@ -52,7 +52,7 @@ class RepoUsuariosFich(private val rutaArchivo: String, private val fich: IUtilF
      */
     override fun agregar(usuario: Usuario): Boolean {
         if (super.agregar(usuario)) {
-            fich.agregarLinea(rutaArchivo, usuario.serializar())
+            return fich.agregarLinea(rutaArchivo, usuario.serializar())
         }
         return false
     }
