@@ -39,7 +39,13 @@ class Ficheros(private val entradaSalida: IEntradaSalida) : IUtilFicheros {
         if (!existeFichero(ruta)) {
             return false
         } else {
-            File(ruta).appendText(linea)
+            val file = File(ruta)
+            if (file.length().toInt() == 0) {
+                // Si el archivo está vacío no agregamos salto de línea (BUGFIX)
+                file.appendText(linea)
+            } else {
+                file.appendText("\n" + linea)
+            }
             return true
         }
     }
@@ -57,7 +63,7 @@ class Ficheros(private val entradaSalida: IEntradaSalida) : IUtilFicheros {
         if (existeFichero(ruta)) {
             File(ruta).writeText("")
 
-            // Añade los elementos por filas haciendo uso de agregarLinea() y a su vez serializandolos con el método serializar() (poliformismo).
+            // Añade los elementos por filas haciendo uso de agregarLinea() y a su vez serializandolos con el metodo serializar() (poliformismo).
             for (elemento in elementos) {
                 agregarLinea(ruta, elemento.serializar())
             }

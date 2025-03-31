@@ -11,7 +11,7 @@ class SeguroVida : Seguro {
     private var indemnizacion: Double
 
     companion object {
-        private var numPolizasVida: Int = 800000
+        internal var numPolizasVida: Int = 800000
 
         /**
          *

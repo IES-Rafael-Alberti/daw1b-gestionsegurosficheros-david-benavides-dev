@@ -1,6 +1,6 @@
 package model
 
-abstract class Seguro(private var numPoliza: Int, private var dniTitular: String, protected var importe: Double): IExportable {
+abstract class Seguro(var numPoliza: Int, private var dniTitular: String, protected var importe: Double): IExportable {
     init {
         require(dniTitular.matches(Regex("^[0-9]{8}[A-Z]$"))) { "*ERROR* DNI incorrecto." }
     }

@@ -2,15 +2,16 @@ package data
 
 import model.Perfil
 import model.Usuario
+import utils.Seguridad
 
-sealed class RepoUsuariosMem : IRepoUsuarios {
-    private val usuarios: MutableList<Usuario> = mutableListOf()
+open class RepoUsuariosMem : IRepoUsuarios {
+    open val usuarios: MutableList<Usuario> = mutableListOf()
 
     /**
      *
      */
     override fun agregar(usuario: Usuario): Boolean {
-        if (buscar(usuario.nombre) != null) {
+        if (buscar(usuario.nombre) == null) {
             usuarios.add(usuario)
             return true
         }
@@ -67,7 +68,7 @@ sealed class RepoUsuariosMem : IRepoUsuarios {
      */
     override fun cambiarClave(usuario: Usuario, nuevaClave: String): Boolean {
         if (buscar(usuario.nombre) != null) {
-            usuario.cambiarClave(nuevaClave)
+            usuario.cambiarClave(Seguridad.encriptarClave(nuevaClave))
             return true
         }
         return false
