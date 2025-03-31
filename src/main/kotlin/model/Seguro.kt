@@ -70,7 +70,7 @@ abstract class Seguro(var numPoliza: Int, private var dniTitular: String, protec
      * @return El código hash calculado para este objeto.
      */
     override fun hashCode(): Int {
-        return numPoliza.hashCode() + dniTitular.hashCode()
+        return numPoliza.hashCode()
     }
 
 
@@ -84,6 +84,6 @@ abstract class Seguro(var numPoliza: Int, private var dniTitular: String, protec
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Seguro) return false
-        return numPoliza == other.numPoliza && dniTitular == other.dniTitular
+        return numPoliza == other.numPoliza
     }
 }

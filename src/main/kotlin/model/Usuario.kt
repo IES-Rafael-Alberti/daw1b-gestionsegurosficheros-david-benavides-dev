@@ -68,4 +68,11 @@ class Usuario(var nombre: String, clave: String, var perfil: Perfil) : IExportab
     override fun serializar(separador: String): String {
         return "$nombre$separador$clave$separador$perfil"
     }
+
+    /**
+     *
+     */
+    override fun toString(): String {
+        return "Usuario($nombre, $clave, $perfil)"
+    }
 }
