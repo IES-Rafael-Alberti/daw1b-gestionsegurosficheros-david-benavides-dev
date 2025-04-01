@@ -57,16 +57,10 @@ class Consola : IEntradaSalida {
      */
     override fun pedirInfo(msj: String, error: String, debeCumplir: (String) -> Boolean): String {
 
-        var input: String
+        val input = pedirInfo(msj)
 
-        do {
-            input = pedirInfo(msj)
-            try {
-                require(debeCumplir(input)) { error }
-            } catch (e: IllegalArgumentException) {
-                mostrarError(msj = e.message.toString())
-            }
-        } while (!debeCumplir(input))
+        require(debeCumplir(input)) { error }
+
         return input
     }
 
@@ -146,7 +140,7 @@ class Consola : IEntradaSalida {
      *
      */
     override fun pausar(msj: String) {
-        println(msj)
+        print(msj)
         readln()
     }
 
@@ -177,4 +171,14 @@ class Consola : IEntradaSalida {
         }
         return opcion == "s"
     }
+
+//    fun preguntar2(mensaje: String): Boolean {
+//
+//        var opcion = ""
+//
+//        while (opcion != "s" && opcion != "n") {
+//            opcion.lowercase() = pedirInfo(mensaje, "error", (opcion"s"))
+//        }
+//        return opcion == "s"
+//    }
 }
