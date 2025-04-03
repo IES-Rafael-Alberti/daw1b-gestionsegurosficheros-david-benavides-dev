@@ -27,16 +27,11 @@ class RepoUsuariosFich(private val rutaArchivo: String, private val fich: IUtilF
      */
     override fun cargarUsuarios(): Boolean {
         if (fich.existeFichero(rutaArchivo)) {
-
             val listaStrings = fich.leerArchivo(rutaArchivo)
 
             for (linea in listaStrings) {
                 val datos = linea.split(";")
-                try {
-                    require(datos.size == 3)
-                } catch (e: IllegalArgumentException) {
-                    return false
-                }
+                require(datos.size == 3) { "Debe contener exactamente 3 elementos." }
                 usuarios.add(Usuario.crearUsuario(datos))
             }
             return true

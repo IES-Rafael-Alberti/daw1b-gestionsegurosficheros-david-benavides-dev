@@ -15,8 +15,7 @@ import ui.IEntradaSalida
  * @property gestorUsuarios Servicio de operaciones sobre usuarios.
  * @property gestorSeguros Servicio de operaciones sobre seguros.
  */
-class GestorMenu(val nombreUsuario: String, val perfilUsuario: Perfil, val ui: IEntradaSalida, val gestionUsuarios: IServUsuarios, val gestionSeguros: IServSeguros)
-{
+class GestorMenu(val nombreUsuario: String, val perfilUsuario: Perfil, val ui: IEntradaSalida, val gestionUsuarios: IServUsuarios, val gestionSeguros: IServSeguros) {
 
     /**
      * Inicia un menú según el índice correspondiente al perfil actual.
@@ -24,7 +23,7 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: Perfil, val ui: I
      * @param indice Índice del menú que se desea mostrar (0 = principal).
      */
     fun iniciarMenu(indice: Int = 0) {
-        val (opciones, acciones) = ConfiguracionesApp.obtenerMenuYAcciones(perfilUsuario, indice)
+        val (opciones, acciones) = ConfiguracionesApp.obtenerMenuYAcciones(perfilUsuario.name.lowercase(), indice)
         ejecutarMenu(opciones, acciones)
     }
 
@@ -62,8 +61,7 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: Perfil, val ui: I
                 val accion = ejecutar[opcion]
                 // Si la accion ejecutada del menú retorna true, debe salir del menú
                 if (accion != null && accion(this)) return
-            }
-            else {
+            } else {
                 ui.mostrarError("Opción no válida!")
             }
         } while (true)
@@ -71,41 +69,41 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: Perfil, val ui: I
 
     /** Crea un nuevo usuario solicitando los datos necesarios al usuario */
     fun nuevoUsuario() {
-        if (consola.preguntar("¿Desea añadir un nuevo usuario? s/n >> ")) {
+        if (ui.preguntar("¿Desea añadir un nuevo usuario? s/n >> ")) {
             try {
-                val nombre = consola.pedirInfo("Introduce el nombre del usuario >> ")
-                val pwd = consola.pedirInfoOculta("Introduce su contraseña >> ")
-                val perfil = consola.pedirInfo("Perfil de usuario >> ")
+                val nombre = ui.pedirInfo("Introduce el nombre del usuario >> ")
+                val pwd = ui.pedirInfoOculta("Introduce su contraseña >> ")
+                val perfil = ui.pedirInfo("Perfil de usuario >> ")
                 gestionUsuarios.agregarUsuario(nombre, pwd, Perfil.getPerfil(perfil))
             } catch (e: IllegalArgumentException) {
-                consola.mostrarError(e.message.toString())
+                ui.mostrarError(e.message.toString())
             }
         }
     }
 
     /** Elimina un usuario si existe */
     fun eliminarUsuario() {
-        if (consola.preguntar("¿Desea eliminar un usuario existente? s/n >> ")) {
+        if (ui.preguntar("¿Desea eliminar un usuario existente? s/n >> ")) {
             try {
-                if (!gestionUsuarios.eliminarUsuario(consola.pedirInfo("Introduzca el nombre del usuario a eliminar >> "))) {
+                if (!gestionUsuarios.eliminarUsuario(ui.pedirInfo("Introduzca el nombre del usuario a eliminar >> "))) {
                     throw IllegalArgumentException("Usuario no encontrado.")
                 } else {
-                    consola.mostrar("Usuario eliminado con éxito.", pausa = true)
+                    ui.mostrar("Usuario eliminado con éxito.", pausa = true)
                 }
             } catch (e: IllegalArgumentException) {
-                consola.mostrarError(e.message.toString())
+                ui.mostrarError(e.message.toString())
             }
         }
     }
 
     /** Cambia la contraseña del usuario actual */
     fun cambiarClaveUsuario() {
-        val usuario = gestionUsuarios.buscarUsuario(consola.pedirInfo("Introduzca el nombre del usuario >> "))
+        val usuario = gestionUsuarios.buscarUsuario(ui.pedirInfo("Introduzca el nombre del usuario >> "))
         if (usuario != null) {
-            val pwd = consola.pedirInfo("Introduzca la nueva contraseña para el usuario ${usuario.nombre} >> ")
+            val pwd = ui.pedirInfo("Introduzca la nueva contraseña para el usuario ${usuario.nombre} >> ")
             gestionUsuarios.cambiarClave(usuario, pwd)
         } else {
-            consola.mostrarError("Usuario no encontrado.")
+            ui.mostrarError("Usuario no encontrado.")
         }
     }
 
@@ -113,9 +111,9 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: Perfil, val ui: I
      * Mostrar la lista de usuarios (Todos o filstrados por un perfil)
      */
     fun consultarUsuarios() {
-        if (consola.preguntar("¿Desea consultar la lista de usuarios? s/n >> ")) {
+        if (ui.preguntar("¿Desea consultar la lista de usuarios? s/n >> ")) {
             for (usuario in gestionUsuarios.consultarTodos()) {
-                consola.mostrar(usuario.toString(), true)
+                ui.mostrar(usuario.toString(), true)
             }
         }
     }
@@ -125,8 +123,15 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: Perfil, val ui: I
      *
      * @return El DNI introducido en mayúsculas.
      */
-    private fun pedirDni() {
-        TODO("Implementar este método")
+    private fun pedirDni(): String {
+        var dni: String = ""
+
+        try {
+            dni = ui.pedirInfo("Introduzca DNI > ", "DNI incorrecto") { input -> Regex("^[0-9]{8}[A-Z]$").matches(input) }
+        } catch (e: IllegalArgumentException) {
+            ui.mostrarError(e.message.toString())
+        }
+        return dni.uppercase()
     }
 
     /**
@@ -134,8 +139,17 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: Perfil, val ui: I
      *
      * @return El valor introducido como `Double` si es válido.
      */
-    private fun pedirImporte() {
-        TODO("Implementar este método")
+    private fun pedirImporte(): Double {
+        var importe: Double? = null
+
+        while (importe == null) {
+            try {
+                importe = ui.pedirDouble("Introduce el importe > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            } catch (e: IllegalArgumentException) {
+                ui.mostrarError(e.message.toString())
+            }
+        }
+        return importe
     }
 
     /** Crea un nuevo seguro de hogar solicitando los datos al usuario */
@@ -160,7 +174,14 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: Perfil, val ui: I
 
     /** Muestra todos los seguros existentes */
     fun consultarSeguros() {
-        TODO("Implementar este método")
+        val lista = gestionSeguros.consultarTodos()
+        if (lista.isEmpty()) {
+            ui.mostrar("No hay seguros existentes", pausa = true) }
+        else {
+            for (elemento in lista) {
+                ui.mostrar(elemento.toString())
+            }
+        }
     }
 
     /** Muestra todos los seguros de tipo hogar */

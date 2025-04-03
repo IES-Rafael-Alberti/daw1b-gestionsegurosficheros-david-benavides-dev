@@ -14,13 +14,14 @@ class RepoSegurosFich(private val rutaArchivo: String, private val fich: IUtilFi
     /**
      *
      */
-    override fun cargarSeguros(mapa: Map<String, (List<String>) -> Seguro>): Boolean {
-        TODO("Not yet implemented")
-    }
 
 
     init {
         // cargarSeguros()
+    }
+
+    override fun cargarSeguros(mapa: Map<String, (List<String>) -> Seguro?>): Boolean {
+        TODO("Not yet implemented")
     }
 
     /**

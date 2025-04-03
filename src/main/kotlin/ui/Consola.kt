@@ -69,22 +69,14 @@ class Consola : IEntradaSalida {
      */
     override fun pedirDouble(prompt: String, error: String, errorConv: String, debeCumplir: (Double) -> Boolean): Double {
 
-        var input: String
-        var numero: Double? = null
+        val input = pedirInfo(prompt).replace(',', '.')
 
-        do {
-            input = pedirInfo(prompt)
+        val numero = input.toDoubleOrNull()
 
-            input = input.replace(',', '.')
+        require(numero != null) { errorConv }
 
-            try {
-                numero = input.toDoubleOrNull() ?: throw IllegalArgumentException(errorConv)
-                require(debeCumplir(numero)) { error }
+        require(debeCumplir(numero)) { error }
 
-            } catch (e: Exception) {
-                mostrarError(e.message.toString())
-            }
-        } while (numero == null)
         return numero
     }
 
@@ -93,20 +85,14 @@ class Consola : IEntradaSalida {
      */
     override fun pedirEntero(prompt: String, error: String, errorConv: String, debeCumplir: (Int) -> Boolean): Int {
 
-        var input: String
-        var numero: Int? = null
+        val input = pedirInfo(prompt)
 
-        do {
-            input = pedirInfo(prompt)
+        val numero = input.toIntOrNull()
 
-            try {
-                numero = input.toIntOrNull() ?: throw IllegalArgumentException(errorConv)
-                require(debeCumplir(numero)) { error }
+        require(numero is Int) { errorConv }
 
-            } catch (e: Exception) {
-                mostrarError(e.message.toString())
-            }
-        } while (numero == null)
+        require(debeCumplir(numero)) { error }
+
         return numero
     }
 
