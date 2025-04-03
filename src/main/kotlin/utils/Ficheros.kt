@@ -23,9 +23,10 @@ class Ficheros(private val entradaSalida: IEntradaSalida) : IUtilFicheros {
     override fun leerArchivo(ruta: String): List<String> {
         if (!existeFichero(ruta)) {
             return mutableListOf()
+        } else {
+            val rutaArchivo = File(ruta)
+            return rutaArchivo.readLines()
         }
-        val rutaArchivo = File(ruta)
-        return rutaArchivo.readLines()
     }
 
     /**

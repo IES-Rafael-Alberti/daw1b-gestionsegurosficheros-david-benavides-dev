@@ -68,7 +68,7 @@ class ControlAcceso(private val rutaArchivo: String, private val gestorUsuarios:
     private fun verificarFicheroUsuarios(): Boolean {
         if (!ficheros.existeDirectorio(rutaArchivo) && !ficheros.existeFichero(rutaArchivo) && ficheros.leerArchivo(rutaArchivo).isEmpty()) {
             if (ui.preguntar("No hay datos iniciales cargados. ¿Desea crearlo? > ")) {
-                ficheros.agregarLinea(rutaArchivo, "")
+                File(rutaArchivo).writeText("")
                 return true
             }
         }
@@ -99,6 +99,7 @@ class ControlAcceso(private val rutaArchivo: String, private val gestorUsuarios:
             }
 
             val user = gestorUsuarios.buscarUsuario(usuario)
+
 
             if (user != null && Seguridad.verificarClave(pwd, user.clave)) {
                 return Pair(user.nombre, user.perfil)

@@ -4,71 +4,79 @@ import model.Seguro
 import model.SeguroAuto
 import model.SeguroHogar
 import model.SeguroVida
+import utils.Ficheros
 import utils.IUtilFicheros
 
 /**
  *
  */
-class RepoSegurosFich(private val rutaArchivo: String, private val fich: IUtilFicheros): RepoSegurosMem(), ICargarSegurosIniciales {
-
-    /**
-     *
-     */
-
-
-    init {
-        // cargarSeguros()
-    }
-
+class RepoSegurosFich(val rutaArchivo: String, val fichero: Ficheros) : RepoSegurosMem(), ICargarSegurosIniciales {
     override fun cargarSeguros(mapa: Map<String, (List<String>) -> Seguro?>): Boolean {
-        TODO("Not yet implemented")
+        val listaStrings = fichero.leerArchivo(rutaArchivo)
+        for (elemento in listaStrings) {
+            val numPoliza = elemento.split(";").first()
+            if (numPoliza >= 100000.toString() && numPoliza < 400000.toString()) {
+                val funcion = mapa["SeguroHogar"]
+
+                if (funcion != null) {
+                    val seguro = funcion(elemento.split(";"))
+                    if(seguro?.let { super.agregar(it) } == true){
+                        actualizarContadores(super.seguros)
+                        return true
+                    }
+                } else {
+                    println("ERROR.")
+                }
+            }
+            if (numPoliza >= 400000.toString() && numPoliza < 800000.toString()) {
+                val funcion = mapa["SeguroAuto"]
+
+                if (funcion != null) {
+                    val seguro = funcion(elemento.split(";"))
+                    if(seguro?.let { super.agregar(it) } == true){
+                        actualizarContadores(super.seguros)
+                        return true
+                    }
+                } else {
+                    println("ERROR.")
+                }
+            }
+            if (numPoliza >= 800000.toString()) {
+                val funcion = mapa["SeguroVida"]
+
+                if (funcion != null) {
+                    val seguro = funcion(elemento.split(";"))
+                    if(seguro?.let { super.agregar(it) } == true){
+                        actualizarContadores(super.seguros)
+                        return true
+                    }
+                } else {
+                    println("ERROR.")
+                }
+            }
+        }
+        return false
     }
 
-    /**
-     *
-     */
     override fun agregar(seguro: Seguro): Boolean {
-        return super.agregar(seguro)
+        return if (fichero.agregarLinea(rutaArchivo, seguro.serializar())) {
+            super.agregar(seguro)
+        } else {
+            false
+        }
     }
 
-    /**
-     *
-     */
-    override fun buscar(numPoliza: Int): Seguro? {
-        return super.buscar(numPoliza)
-    }
-
-    /**
-     *
-     */
     override fun eliminar(seguro: Seguro): Boolean {
-        return super.eliminar(seguro)
+        val lista = super.seguros.toMutableList()
+        lista.remove(seguro)
+
+        return if (fichero.escribirArchivo(rutaArchivo, lista)) {
+            super.eliminar(seguro)
+        } else {
+            false
+        }
     }
 
-    /**
-     *
-     */
-    override fun eliminar(numPoliza: Int): Boolean {
-        return super.eliminar(numPoliza)
-    }
-
-    /**
-     *
-     */
-    override fun obtenerTodos(): List<Seguro> {
-        return super.obtenerTodos()
-    }
-
-    /**
-     *
-     */
-    override fun obtener(tipoSeguro: String): List<Seguro> {
-        return super.obtener(tipoSeguro)
-    }
-
-    /**
-     *
-     */
     private fun actualizarContadores(seguros: List<Seguro>) {
         // Actualizar los contadores de polizas del companion object según el tipo de seguro
         val maxHogar = seguros.filter { it.tipoSeguro() == "SeguroHogar" }.maxOfOrNull { it.numPoliza }
@@ -79,5 +87,4 @@ class RepoSegurosFich(private val rutaArchivo: String, private val fich: IUtilFi
         if (maxAuto != null) SeguroAuto.numPolizasAuto = maxAuto
         if (maxVida != null) SeguroVida.numPolizasVida = maxVida
     }
-
 }

@@ -15,10 +15,6 @@ import utils.IUtilFicheros
 class RepoUsuariosFich(private val rutaArchivo: String, private val fich: IUtilFicheros) : RepoUsuariosMem(), ICargarUsuariosIniciales {
     override val usuarios: MutableList<Usuario> = mutableListOf()
 
-    init {
-        cargarUsuarios()
-    }
-
     /**
      * Carga los usuarios desde el archivo especificado en [rutaArchivo].
      * Si el archivo existe, lee las líneas, las procesa y agrega los usuarios a la lista [usuarios].
@@ -31,12 +27,15 @@ class RepoUsuariosFich(private val rutaArchivo: String, private val fich: IUtilF
 
             for (linea in listaStrings) {
                 val datos = linea.split(";")
-                require(datos.size == 3) { "Debe contener exactamente 3 elementos." }
                 usuarios.add(Usuario.crearUsuario(datos))
             }
             return true
         }
         return false
+    }
+
+    init {
+        cargarUsuarios()
     }
 
     /**
