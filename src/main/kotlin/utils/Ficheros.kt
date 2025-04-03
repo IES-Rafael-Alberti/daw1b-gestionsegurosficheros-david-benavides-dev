@@ -22,7 +22,7 @@ class Ficheros(private val entradaSalida: IEntradaSalida) : IUtilFicheros {
      */
     override fun leerArchivo(ruta: String): List<String> {
         if (!existeFichero(ruta)) {
-            throw IllegalArgumentException("*ERROR* El archivo no existe.")
+            return mutableListOf()
         }
         val rutaArchivo = File(ruta)
         return rutaArchivo.readLines()

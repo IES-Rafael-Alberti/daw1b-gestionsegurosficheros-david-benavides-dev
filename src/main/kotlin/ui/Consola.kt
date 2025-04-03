@@ -1,9 +1,9 @@
 package ui
 
-import jdk.internal.org.jline.reader.EndOfFileException
-import jdk.internal.org.jline.reader.LineReaderBuilder
-import jdk.internal.org.jline.reader.UserInterruptException
-import jdk.internal.org.jline.terminal.TerminalBuilder
+import org.jline.reader.EndOfFileException
+import org.jline.reader.LineReaderBuilder
+import org.jline.reader.UserInterruptException
+import org.jline.terminal.TerminalBuilder
 
 /**
  *

@@ -1,9 +1,12 @@
 package app
 
 import model.Perfil
+import model.Usuario
 import service.IServUsuarios
 import ui.IEntradaSalida
 import utils.IUtilFicheros
+import utils.Seguridad
+import java.io.File
 
 /**
  * Clase responsable del control de acceso de usuarios: alta inicial, inicio de sesión
@@ -39,16 +42,16 @@ class ControlAcceso(private val rutaArchivo: String, private val gestorUsuarios:
      */
     fun autenticar(): Pair<String, Perfil>? {
         if (!ficheros.existeFichero(rutaArchivo)) {
-            if (ui.preguntar("No hay datos iniciales cargados. ¿Desea crearlo? > ")) {
-                val repoInicial = gestorUsuarios.agregarUsuario(ui.pedirInfo("Introduzca el nombre del usuario > "), ui.pedirInfo("Introduzca la clave del usuario > "), Perfil.ADMIN)
-                ficheros.escribirArchivo(rutaArchivo, gestorUsuarios.consultarTodos())
-            } else {
-                return null
+            if (verificarFicheroUsuarios()) {
+                val nombre: String = ui.pedirInfo("Introduzca su nombre de usuario > ")
+                val pwd: String = ui.pedirInfo("Introduzca su contraseña > ")
+                val usuario = Usuario.crearUsuario((mutableListOf(nombre, pwd, Perfil.ADMIN.toString())))
+                gestorUsuarios.agregarUsuario(nombre, pwd, Perfil.ADMIN)
+                ficheros.agregarLinea(rutaArchivo, usuario.serializar())
             }
-            val login = iniciarSesion()
-            return login
         }
-        return null
+        val login = iniciarSesion()
+        return login
     }
 
     /**
@@ -62,8 +65,14 @@ class ControlAcceso(private val rutaArchivo: String, private val gestorUsuarios:
      * @return `true` si el proceso puede continuar (hay al menos un usuario),
      *         `false` si el usuario cancela la creación inicial o ocurre un error.
      */
-    private fun verificarFicheroUsuarios() {
-        TODO("Implementar este método")
+    private fun verificarFicheroUsuarios(): Boolean {
+        if (!ficheros.existeDirectorio(rutaArchivo) && !ficheros.existeFichero(rutaArchivo) && ficheros.leerArchivo(rutaArchivo).isEmpty()) {
+            if (ui.preguntar("No hay datos iniciales cargados. ¿Desea crearlo? > ")) {
+                ficheros.agregarLinea(rutaArchivo, "")
+                return true
+            }
+        }
+        return false
     }
 
     /**
@@ -91,7 +100,7 @@ class ControlAcceso(private val rutaArchivo: String, private val gestorUsuarios:
 
             val user = gestorUsuarios.buscarUsuario(usuario)
 
-            if (user != null && user.clave == pwd) {
+            if (user != null && Seguridad.verificarClave(pwd, user.clave)) {
                 return Pair(user.nombre, user.perfil)
             } else {
                 ui.mostrarError("Fallo al iniciar sesión. Inténtalo de nuevo.")

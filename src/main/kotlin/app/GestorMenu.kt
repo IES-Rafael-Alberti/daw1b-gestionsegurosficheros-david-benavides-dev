@@ -1,9 +1,11 @@
 package app
 
-import model.Perfil
+import model.*
 import service.IServSeguros
 import service.IServUsuarios
 import ui.IEntradaSalida
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 /**
  * Clase encargada de gestionar el flujo de menús y opciones de la aplicación,
@@ -115,6 +117,7 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: Perfil, val ui: I
             for (usuario in gestionUsuarios.consultarTodos()) {
                 ui.mostrar(usuario.toString(), true)
             }
+            ui.pausar()
         }
     }
 
@@ -154,49 +157,112 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: Perfil, val ui: I
 
     /** Crea un nuevo seguro de hogar solicitando los datos al usuario */
     fun contratarSeguroHogar() {
-        TODO("Implementar este método")
+        try {
+            val dni = pedirDni()
+            val importe = pedirImporte()
+            val metrosCuadrados = ui.pedirEntero("Introduce los metros cuadrados > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            val valorContenido = ui.pedirDouble("Introduce el valor del contenido > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            val direccion = ui.pedirInfo("Introduce la dirección > ")
+            val anioConstruccion = ui.pedirEntero("Introduce el año de construcción > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            gestionSeguros.contratarSeguroHogar(dni, importe, metrosCuadrados, valorContenido, direccion, anioConstruccion)
+        } catch (e: IllegalArgumentException) {
+            ui.mostrarError("Error en los datos.")
+        }
     }
 
     /** Crea un nuevo seguro de auto solicitando los datos al usuario */
     fun contratarSeguroAuto() {
-        TODO("Implementar este método")
+        try {
+            val dni = pedirDni()
+            val importe = pedirImporte()
+            val descripcion = ui.pedirInfo("Introduce la descripción > ")
+            val combustible = ui.pedirEntero("Introduce el combustible > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            val tipoAuto = ui.pedirInfo("Introduce el tipo de vehículo > ")
+            val tipoCobertura = ui.pedirInfo("Introduce el tipo de cobertura > ")
+            val asistencia = ui.preguntar("¿Requiere de asistencia en carretera? s/n >")
+            val numPartes = ui.pedirEntero("Introduce el número de partes > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            gestionSeguros.contratarSeguroAuto(dni, importe, descripcion, combustible, Auto.getAuto(tipoAuto), Cobertura.getCobertura(tipoCobertura), asistencia, numPartes)
+        } catch (e: IllegalArgumentException) {
+            ui.mostrarError("Error en los datos.")
+        }
     }
 
     /** Crea un nuevo seguro de vida solicitando los datos al usuario */
     fun contratarSeguroVida() {
-        TODO("Implementar este método")
+        try {
+            val dni = pedirDni()
+            val importe = pedirImporte()
+            val fecha = ui.pedirInfo("Introduce la fecha > ")
+            val nivelRiesgo = ui.pedirInfo("Introduce el nivel de riesgo > ")
+            val indemnizacion = ui.pedirDouble("Introduce la indemnizació > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            gestionSeguros.contratarSeguroVida(dni, importe, LocalDate.parse(fecha, DateTimeFormatter.ofPattern("dd/MM/yyyy")), Riesgo.getRiesgo(nivelRiesgo), indemnizacion)
+        } catch (e: IllegalArgumentException) {
+            ui.mostrarError("Error en los datos.")
+        }
     }
 
     /** Elimina un seguro si existe por su número de póliza */
     fun eliminarSeguro() {
-        TODO("Implementar este método")
+        if (!ui.preguntar("¿Desea borrar un seguro? (s/n) > ")) {
+            return
+        }
+        try {
+            val numpol = ui.pedirEntero("Introduce el número de póliza > ", "Número incorrecto", "Error de conversión") { numero -> numero >= 0 }
+            gestionSeguros.eliminarSeguro(numpol)
+        } catch (e: IllegalArgumentException) {
+            ui.mostrarError("No existe ningún seguro por ese número de póliza.")
+        }
     }
 
     /** Muestra todos los seguros existentes */
     fun consultarSeguros() {
         val lista = gestionSeguros.consultarTodos()
         if (lista.isEmpty()) {
-            ui.mostrar("No hay seguros existentes", pausa = true) }
-        else {
+            ui.mostrarError("No hay seguros existentes", pausa = true)
+        } else {
             for (elemento in lista) {
                 ui.mostrar(elemento.toString())
             }
+            ui.pausar()
         }
     }
 
     /** Muestra todos los seguros de tipo hogar */
     fun consultarSegurosHogar() {
-        TODO("Implementar este método")
+        val lista = gestionSeguros.consultarPorTipo("SeguroHogar")
+        if (lista.isEmpty()) {
+            ui.mostrarError("No hay seguros de hogar existentes.", pausa = true)
+        } else {
+            for (elemento in lista) {
+                ui.mostrar(elemento.toString())
+            }
+            ui.pausar()
+        }
     }
 
     /** Muestra todos los seguros de tipo auto */
     fun consultarSegurosAuto() {
-        TODO("Implementar este método")
+        val lista = gestionSeguros.consultarPorTipo("SeguroAuto")
+        if (lista.isEmpty()) {
+            ui.mostrarError("No hay seguros de auto existentes.", pausa = true)
+        } else {
+            for (elemento in lista) {
+                ui.mostrar(elemento.toString())
+            }
+            ui.pausar()
+        }
     }
 
     /** Muestra todos los seguros de tipo vida */
     fun consultarSegurosVida() {
-        TODO("Implementar este método")
+        val lista = gestionSeguros.consultarPorTipo("SeguroVida")
+        if (lista.isEmpty()) {
+            ui.mostrarError("No hay seguros de vida existentes.", pausa = true)
+        } else {
+            for (elemento in lista) {
+                ui.mostrar(elemento.toString())
+            }
+            ui.pausar()
+        }
     }
-
 }

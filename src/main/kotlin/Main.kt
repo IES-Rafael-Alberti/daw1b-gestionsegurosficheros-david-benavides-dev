@@ -7,8 +7,8 @@ import utils.*
 fun main() {
     // Crear dos variables con las rutas de los archivos de texto donde se almacenan los usuarios y seguros.
     // Estos ficheros se usarán solo si el programa se ejecuta en modo de almacenamiento persistente.
-    val rutaUsuario: String = "src/main/kotlin/data/res/Usuarios.txt"
-    val rutaSeguros: String = "src/main/kotlin/data/res/Seguros.txt"
+    val rutaUsuario = "src/main/kotlin/data/res/Usuarios.txt"
+    val rutaSeguros = "src/main/kotlin/data/res/Seguros.txt"
 
     // Instanciamos los componentes base del sistema: la interfaz de usuario, el gestor de ficheros y el módulo de seguridad.
     // Estos objetos serán inyectados en los diferentes servicios y utilidades a lo largo del programa.
@@ -46,8 +46,8 @@ fun main() {
 
     // Se inicia el proceso de autenticación. Se comprueba si hay usuarios en el sistema y se pide login.
     // Si no hay usuarios, se permite crear un usuario ADMIN inicial.
-    val gestorMenu = ControlAcceso(rutaUsuario, gestorUsuarios, ui, gestionFicheros)
-    val login = gestorMenu.autenticar()
+    val gestorAcceso = ControlAcceso(rutaUsuario, gestorUsuarios, ui, gestionFicheros)
+    val login = gestorAcceso.autenticar()
 
     // Si el login fue exitoso (no es null), se inicia el menú correspondiente al perfil del usuario autenticado.
     // Se lanza el menú principal, **iniciarMenu(0)**, pasándole toda la información necesaria.
