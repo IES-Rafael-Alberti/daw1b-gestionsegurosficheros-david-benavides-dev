@@ -22,20 +22,13 @@ class RepoUsuariosFich(private val rutaArchivo: String, private val fich: IUtilF
      * @return `true` si los usuarios fueron cargados correctamente, `false` si hubo algún error.
      */
     override fun cargarUsuarios(): Boolean {
-        if (fich.existeFichero(rutaArchivo)) {
-            val listaStrings = fich.leerArchivo(rutaArchivo)
+        val usuariosCargados = fich.leerArchivo(rutaArchivo)
+        if (usuariosCargados.isEmpty()) return false
 
-            for (linea in listaStrings) {
-                val datos = linea.split(";")
-                usuarios.add(Usuario.crearUsuario(datos))
-            }
-            return true
+        usuariosCargados.forEach {
+            super.agregar(Usuario.crearUsuario(it.split(";")))
         }
-        return false
-    }
-
-    init {
-        cargarUsuarios()
+        return true
     }
 
     /**

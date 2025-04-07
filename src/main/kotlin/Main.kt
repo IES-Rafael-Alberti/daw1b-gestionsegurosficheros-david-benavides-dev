@@ -36,8 +36,9 @@ fun main() {
     } else {
         repoUsuarios = RepoUsuariosFich(rutaUsuario, gestionFicheros)
         repoSeguros = RepoSegurosFich(rutaSeguros, gestionFicheros)
-        CargadorInicial(repoUsuarios, repoSeguros, ui).cargarUsuarios()
-        CargadorInicial(repoUsuarios, repoSeguros, ui).cargarSeguros()
+        val cargador = CargadorInicial(repoUsuarios, repoSeguros, ui)
+        cargador.cargarUsuarios()
+        cargador.cargarSeguros()
     }
 
     // Se crean los servicios de lógica de negocio, inyectando los repositorios y el componente de seguridad.
@@ -47,6 +48,7 @@ fun main() {
     // Se inicia el proceso de autenticación. Se comprueba si hay usuarios en el sistema y se pide login.
     // Si no hay usuarios, se permite crear un usuario ADMIN inicial.
     val gestorAcceso = ControlAcceso(rutaUsuario, gestorUsuarios, ui, gestionFicheros)
+    ui.mostrar("**LOGIN**")
     val login = gestorAcceso.autenticar()
 
     // Si el login fue exitoso (no es null), se inicia el menú correspondiente al perfil del usuario autenticado.
@@ -54,4 +56,8 @@ fun main() {
     if (login != null) {
         GestorMenu(login.first, login.second, ui, gestorUsuarios, gestorSeguros).iniciarMenu()
     }
+
+    // Limpia la pantalla y sale del programa.
+    ui.limpiarPantalla()
+    ui.mostrar("Saliendo del programa...")
 }

@@ -1,6 +1,7 @@
 package utils
 
 import model.IExportable
+import ui.Consola
 import ui.IEntradaSalida
 import java.io.File
 
@@ -21,11 +22,12 @@ class Ficheros(private val entradaSalida: IEntradaSalida) : IUtilFicheros {
      * @throws IllegalArgumentException Si el archivo no existe.
      */
     override fun leerArchivo(ruta: String): List<String> {
-        if (!existeFichero(ruta)) {
-            return mutableListOf()
-        } else {
+        if (existeFichero(ruta)) {
             val rutaArchivo = File(ruta)
             return rutaArchivo.readLines()
+        } else {
+            println("No existe el archivo")
+            return mutableListOf()
         }
     }
 

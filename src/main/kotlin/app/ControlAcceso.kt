@@ -45,11 +45,13 @@ class ControlAcceso(private val rutaArchivo: String, private val gestorUsuarios:
             if (verificarFicheroUsuarios()) {
                 val nombre: String = ui.pedirInfo("Introduzca su nombre de usuario > ")
                 val pwd: String = ui.pedirInfo("Introduzca su contraseña > ")
-                val usuario = Usuario.crearUsuario((mutableListOf(nombre, pwd, Perfil.ADMIN.toString())))
-                gestorUsuarios.agregarUsuario(nombre, pwd, Perfil.ADMIN)
+                val usuario = Usuario.crearUsuario((mutableListOf(nombre, Seguridad.encriptarClave(pwd), Perfil.ADMIN.toString())))
+
                 ficheros.agregarLinea(rutaArchivo, usuario.serializar())
+                gestorUsuarios.agregarUsuario(nombre, pwd, Perfil.ADMIN)
             }
         }
+
         val login = iniciarSesion()
         return login
     }
@@ -99,7 +101,6 @@ class ControlAcceso(private val rutaArchivo: String, private val gestorUsuarios:
             }
 
             val user = gestorUsuarios.buscarUsuario(usuario)
-
 
             if (user != null && Seguridad.verificarClave(pwd, user.clave)) {
                 return Pair(user.nombre, user.perfil)

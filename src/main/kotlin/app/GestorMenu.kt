@@ -4,6 +4,7 @@ import model.*
 import service.IServSeguros
 import service.IServUsuarios
 import ui.IEntradaSalida
+import utils.Seguridad
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -76,7 +77,7 @@ class GestorMenu(val nombreUsuario: String, val perfilUsuario: Perfil, val ui: I
                 val nombre = ui.pedirInfo("Introduce el nombre del usuario >> ")
                 val pwd = ui.pedirInfoOculta("Introduce su contraseña >> ")
                 val perfil = ui.pedirInfo("Perfil de usuario >> ")
-                gestionUsuarios.agregarUsuario(nombre, pwd, Perfil.getPerfil(perfil))
+                gestionUsuarios.agregarUsuario(nombre, Seguridad.encriptarClave(pwd), Perfil.getPerfil(perfil))
             } catch (e: IllegalArgumentException) {
                 ui.mostrarError(e.message.toString())
             }

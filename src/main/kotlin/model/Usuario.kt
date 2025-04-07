@@ -36,7 +36,7 @@ class Usuario(var nombre: String, clave: String, var perfil: Perfil) : IExportab
      * La clave del usuario, encriptada utilizando un algoritmo de encriptación seguro.
      * Este valor se establece al crear el usuario y no puede ser modificado directamente.
      */
-    var clave: String = Seguridad.encriptarClave(clave)
+    var clave = clave
         private set
 
     /**

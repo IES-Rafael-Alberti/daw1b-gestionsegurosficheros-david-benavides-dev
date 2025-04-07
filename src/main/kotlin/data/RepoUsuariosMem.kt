@@ -33,7 +33,7 @@ open class RepoUsuariosMem : IRepoUsuarios {
      * @return El objeto [Usuario] correspondiente, o `null` si no se encuentra el usuario.
      */
     override fun buscar(nombreUsuario: String): Usuario? {
-        return usuarios.find { it.nombre == nombreUsuario }
+        return usuarios.find { it.nombre.trim().equals(nombreUsuario.trim(), ignoreCase = true) }
     }
 
     /**
